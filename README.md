@@ -1,4 +1,4 @@
-# flight-for-you-assignment
+# _Flight For You
 
 > A Vue.js project
 
