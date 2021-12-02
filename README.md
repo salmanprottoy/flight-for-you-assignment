@@ -1,8 +1,8 @@
-# _Flight For You_
+# flight-for-you-assignment
 
 > A Vue.js project
 
-## _Build Setup_
+## Build Setup
 
 ``` bash
 # install dependencies
