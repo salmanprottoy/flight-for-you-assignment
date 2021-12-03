@@ -5,129 +5,168 @@
       content-class="mt-3 font-weight-bold"
     >
       <b-tab title="Flights" class="text-dark" active>
-        <div class="row g-1" id="fight-search">
-          <div class="col-md-3 shadow">
-            <b-card class="text-center rounded-0" id="fight-search-card">
-              <b-card-text>
-                <p>Leaving From</p>
-                <h1>CDS</h1>
-                <h3>dhaka</h3>
-              </b-card-text>
-            </b-card>
-          </div>
-          <div class="col-md-3 shadow">
-            <b-card class="text-center rounded-0" id="fight-search-card">
-              <b-card-text>
-                <p>Going To</p>
-                <h1>CDS</h1>
-                <h3>dhaka</h3>
-              </b-card-text>
-            </b-card>
-          </div>
-          <div class="col-md-3 border-3 shadow">
-            <b-card
-              class="text-center rounded-0"
-              id="fight-search-card"
-              v-b-modal.modal-center
-            >
-              <b-card-text
-                >Departing on
-                <h3>{{ dates.in }}</h3>
-              </b-card-text>
-              <hr />
-              <b-card-text
-                >Returning on
-                <h3>{{ dates.out }}</h3>
-              </b-card-text>
-            </b-card>
+        <div class="row">
+          <div class="col-md-8">
+            <div class="row g-1" id="fight-search">
+              <div class="col-md-3 shadow">
+                <b-card
+                  class="text-center rounded-0"
+                  id="fight-search-card"
+                  v-b-modal.modal-center1
+                >
+                  <b-card-text>
+                    <p>Leaving From</p>
+                    <h1>CDS</h1>
+                    <h3>dhaka</h3>
+                  </b-card-text>
+                </b-card>
+              </div>
+              <div class="col-md-3 shadow">
+                <b-card
+                  class="text-center rounded-0"
+                  id="fight-search-card"
+                  v-b-modal.modal-center1
+                >
+                  <b-card-text>
+                    <p>Going To</p>
+                    <h1>CDS</h1>
+                    <h3>dhaka</h3>
+                  </b-card-text>
+                </b-card>
+              </div>
 
-            <div>
-              <b-modal id="modal-center" centered title="Select Date">
-                <p class="my-4">
-                  <HotelDatePicker
-                    @check-in-changed="checkInDate"
-                    @check-out-changed="checkOutDate"
-                    format="YYYY-MM-DD"
-                  >
-                  </HotelDatePicker>
-                </p>
-              </b-modal>
+              <div class="col-md-3 border-3 shadow">
+                <b-card
+                  class="text-center rounded-0"
+                  id="fight-search-card"
+                  v-b-modal.modal-center
+                >
+                  <b-card-text
+                    >Departing on
+                    <h3>{{ dates.in }}</h3>
+                  </b-card-text>
+                  <hr />
+                  <b-card-text
+                    >Returning on
+                    <h3>{{ dates.out }}</h3>
+                  </b-card-text>
+                </b-card>
+
+                <div>
+                  <b-modal id="modal-center" centered title="Select Date">
+                    <p class="my-4">
+                      <HotelDatePicker
+                        @check-in-changed="checkInDate"
+                        @check-out-changed="checkOutDate"
+                        format="YYYY-MM-DD"
+                      >
+                      </HotelDatePicker>
+                    </p>
+                  </b-modal>
+                </div>
+              </div>
+              <div class="col-md-3 shadow">
+                <button size="lg" class="btn btn-grad w-100 h-100 rounded-0">
+                  <h1>
+                    <font-awesome-icon icon="plane" />
+                  </h1>
+                  <h2>Search Flight</h2>
+                </button>
+              </div>
+            </div>
+
+            <div class="row mt-3 g-1">
+              <div class="col-md-3 shadow">
+                <b-card
+                  class="text-center rounded-0 w-100 h-100"
+                  border-variant="light"
+                  text-variant="white"
+                  id="flight-card"
+                >
+                  <b-card-text>
+                    <h1>
+                      <font-awesome-icon icon="list" />
+                    </h1>
+                    <h2>Manage Booking</h2>
+                  </b-card-text>
+                </b-card>
+              </div>
+              <div class="col-md-3 shadow">
+                <b-card
+                  class="text-center rounded-0 w-100 h-100"
+                  border-variant="light"
+                  text-variant="white"
+                  id="flight-card"
+                >
+                  <b-card-text>
+                    <h1>
+                      <font-awesome-icon icon="ticket-alt" />
+                    </h1>
+                    <h2>Check in</h2>
+                  </b-card-text>
+                </b-card>
+              </div>
+              <div class="col-md-3 shadow">
+                <b-card
+                  class="text-center rounded-0 w-100 h-100"
+                  border-variant="light"
+                  text-variant="white"
+                  id="flight-card"
+                >
+                  <b-card-text>
+                    <h1>
+                      <font-awesome-icon icon="exchange-alt" />
+                    </h1>
+                    <h2>Rebook and Refund</h2>
+                  </b-card-text>
+                </b-card>
+              </div>
+              <div class="col-md-3 shadow">
+                <b-card
+                  class="text-center rounded-0 w-100 h-100"
+                  border-variant="light"
+                  text-variant="white"
+                  id="flight-card"
+                >
+                  <b-card-text>
+                    <h1>
+                      <font-awesome-icon icon="exclamation-triangle" />
+                    </h1>
+                    <h2>Covid-19 Update</h2>
+                  </b-card-text>
+                </b-card>
+              </div>
             </div>
           </div>
-          <div class="col-md-3 shadow">
-            <button size="lg" class="btn btn-grad w-100 h-100 rounded-0">
-              <h1>
-                <font-awesome-icon icon="plane" />
-              </h1>
-              <h2>Search Flight</h2>
-            </button>
-          </div>
-        </div>
-
-        <div class="row mt-3 g-1">
-          <div class="col-md-3 shadow">
-            <b-card
-              class="text-center rounded-0 w-100 h-100"
-              border-variant="light"
-              text-variant="white"
-              id="flight-card"
-            >
-              <b-card-text>
-                <h1>
-                  <font-awesome-icon icon="list" />
-                </h1>
-                <h2>Manage Booking</h2>
-              </b-card-text>
-            </b-card>
-          </div>
-          <div class="col-md-3 shadow">
-            <b-card
-              class="text-center rounded-0 w-100 h-100"
-              border-variant="light"
-              text-variant="white"
-              id="flight-card"
-            >
-              <b-card-text>
-                <h1>
-                  <font-awesome-icon icon="ticket-alt" />
-                </h1>
-                <h2>Check in</h2>
-              </b-card-text>
-            </b-card>
-          </div>
-          <div class="col-md-3 shadow">
-            <b-card
-              class="text-center rounded-0 w-100 h-100"
-              border-variant="light"
-              text-variant="white"
-              id="flight-card"
-            >
-              <b-card-text>
-                <h1>
-                  <font-awesome-icon icon="exchange-alt" />
-                </h1>
-                <h2>Rebook and Refund</h2>
-              </b-card-text>
-            </b-card>
-          </div>
-          <div class="col-md-3 shadow">
-            <b-card
-              class="text-center rounded-0 w-100 h-100"
-              border-variant="light"
-              text-variant="white"
-              id="flight-card"
-            >
-              <b-card-text>
-                <h1>
-                  <font-awesome-icon icon="exclamation-triangle" />
-                </h1>
-                <h2>Covid-19 Update</h2>
-              </b-card-text>
-            </b-card>
+          <div class="col-md-4">
+            <div class="h-100 w-auto">
+              <img
+                src="https://www.cathaypacific.com/content/dam/focal-point/digital-library/destinations/cebu-ceb/CEB_006Y19.renditionimage.900.450.jpg"
+                alt=""
+                class="img-fluid h-100 w-100"
+              />
+            </div>
           </div>
         </div>
       </b-tab>
     </b-tabs>
+    <div>
+      <b-modal id="modal-center1" centered title="Select Place">
+        <div>
+          <b-form-input
+            v-model="text"
+            placeholder="Enter departing on"
+          ></b-form-input>
+        </div>
+        <br />
+        <div>
+          <b-form-input
+            v-model="text"
+            placeholder="Enter returning on"
+          ></b-form-input>
+        </div>
+      </b-modal>
+    </div>
   </div>
 </template>
 
