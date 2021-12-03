@@ -1,6 +1,9 @@
 <template>
   <div class="m-2 p-2">
-    <b-tabs content-class="mt-3 font-weight-bold">
+    <b-tabs
+      active-nav-item-class="font-weight-bold text-uppercase text-dark"
+      content-class="mt-3 font-weight-bold"
+    >
       <b-tab title="Flights" class="text-dark" active>
         <div class="row g-1" id="fight-search">
           <div class="col-md-3 shadow">
@@ -22,17 +25,34 @@
             </b-card>
           </div>
           <div class="col-md-3 border-3 shadow">
-            <b-card class="text-center rounded-0" id="fight-search-card">
+            <b-card
+              class="text-center rounded-0"
+              id="fight-search-card"
+              v-b-modal.modal-center
+            >
               <b-card-text
                 >Departing on
-                <h3>2021-10-10</h3>
+                <h3>{{ dates.in }}</h3>
               </b-card-text>
               <hr />
               <b-card-text
                 >Returning on
-                <h3>2021-10-10</h3>
+                <h3>{{ dates.out }}</h3>
               </b-card-text>
             </b-card>
+
+            <div>
+              <b-modal id="modal-center" centered title="Select Date">
+                <p class="my-4">
+                  <HotelDatePicker
+                    @check-in-changed="checkInDate"
+                    @check-out-changed="checkOutDate"
+                    format="YYYY-MM-DD"
+                  >
+                  </HotelDatePicker>
+                </p>
+              </b-modal>
+            </div>
           </div>
           <div class="col-md-3 shadow">
             <button size="lg" class="btn btn-grad w-100 h-100 rounded-0">
@@ -112,14 +132,32 @@
 </template>
 
 <script>
+import HotelDatePicker from "vue-hotel-datepicker";
+import "vue-hotel-datepicker/dist/vueHotelDatepicker.css";
+
 export default {
+  components: {
+    HotelDatePicker,
+  },
   data() {
     return {
       leavingFrom: "",
       goingTo: "",
       departingOn: "",
       returningOn: "",
+      dates: {
+        in: new Date().toISOString().slice(0, 10),
+        out: new Date().toISOString().slice(0, 10),
+      },
     };
+  },
+  methods: {
+    checkInDate(val) {
+      this.dates.in = val.toISOString().slice(0, 10);
+    },
+    checkOutDate(val) {
+      this.dates.out = val.toISOString().slice(0, 10);
+    },
   },
 };
 </script>
