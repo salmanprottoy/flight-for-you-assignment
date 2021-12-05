@@ -16,8 +16,8 @@
                 >
                   <b-card-text>
                     <p>Leaving From</p>
-                    <h1>CDS</h1>
-                    <h3>dhaka</h3>
+                    <h1>{{ leavingFrom }}</h1>
+                    <h3>{{ leavingFromCity }}</h3>
                   </b-card-text>
                 </b-card>
               </div>
@@ -29,8 +29,8 @@
                 >
                   <b-card-text>
                     <p>Going To</p>
-                    <h1>CDS</h1>
-                    <h3>dhaka</h3>
+                    <h1>{{ goingTo }}</h1>
+                    <h3>{{ goingToCity }}</h3>
                   </b-card-text>
                 </b-card>
               </div>
@@ -66,7 +66,11 @@
                 </div>
               </div>
               <div class="col-md-3 shadow">
-                <button size="lg" class="btn btn-grad w-100 h-100 rounded-0">
+                <button
+                  size="lg"
+                  class="btn btn-grad w-100 h-100 rounded-0"
+                  @click="searchFlights()"
+                >
                   <h1>
                     <font-awesome-icon icon="plane" />
                   </h1>
@@ -154,18 +158,81 @@
       <b-modal id="modal-center1" centered title="Select Place">
         <div>
           <b-form-input
-            v-model="text"
+            v-model="searchLeavingFrom"
             placeholder="Enter departing on"
+            @input="searchingLeavingFrom()"
           ></b-form-input>
+        </div>
+        <div
+          class="from-list shadow"
+          v-if="flightFromStatus"
+          id="flightFromList"
+        >
+          <tr
+            class="border-1 p-2"
+            v-for="(flight, index) in flight_code"
+            :key="index"
+            style="cursor: pointer; background-color: whitesmoke"
+          >
+            <td
+              class="p-1 m-1"
+              scope="col"
+              @click="setFlightFrom(flight[2], flight[1])"
+            >
+              <b> {{ flight[1] }}</b> ,<b>{{ flight[2] }}</b> ,
+              {{ flight[0] }}
+            </td>
+          </tr>
         </div>
         <br />
         <div>
           <b-form-input
-            v-model="text"
+            v-model="searchGoingTo"
             placeholder="Enter returning on"
+            @input="searchingGoingTo()"
           ></b-form-input>
         </div>
+        <div class="from-list" v-if="flightToStatus" id="flightToList">
+          <tr
+            v-for="(flight, index) in flight_code"
+            :key="index"
+            style="cursor: pointer; background-color: whitesmoke"
+          >
+            <td
+              class="p-1 m-1"
+              scope="col"
+              @click="setFlightTo(flight[2], flight[1])"
+            >
+              <b> {{ flight[1] }}</b> ,<b>{{ flight[2] }}</b> ,
+              {{ flight[0] }}
+            </td>
+          </tr>
+        </div>
       </b-modal>
+    </div>
+
+    <div class="mt-3">
+      <div>
+        <b-card>
+          <div class="row">
+            <div class="col-md-3">
+              <h1>Time</h1>
+              <h4>HDS</h4>
+            </div>
+            <div class="col-md-3">
+              <h2>time</h2>
+            </div>
+            <div class="col-md-3">
+              <h1>Time</h1>
+              <h4>HDS</h4>
+            </div>
+            <div class="col-md-3">
+              <h1>Time</h1>
+              <h4>HDS</h4>
+            </div>
+          </div>
+        </b-card>
+      </div>
     </div>
   </div>
 </template>
@@ -173,6 +240,7 @@
 <script>
 import HotelDatePicker from "vue-hotel-datepicker";
 import "vue-hotel-datepicker/dist/vueHotelDatepicker.css";
+import { autocomplete } from "air-port-codes-node";
 
 export default {
   components: {
@@ -180,14 +248,27 @@ export default {
   },
   data() {
     return {
+      flightFromStatus: false,
+      flightToStatus: false,
+      searchLeavingFrom: "",
+      searchGoingTo: "",
       leavingFrom: "",
       goingTo: "",
+      leavingFromCity: "",
+      goingToCity: "",
       departingOn: "",
       returningOn: "",
+      flight_code: [],
       dates: {
         in: new Date().toISOString().slice(0, 10),
         out: new Date().toISOString().slice(0, 10),
       },
+      apca: autocomplete({
+        key: "763c531c39",
+        secret: "a6741e771d9252d", // Your API Secret Key: use this if you are not connecting from a web server
+        limit: 5,
+      }),
+      flights: [],
     };
   },
   methods: {
@@ -196,6 +277,73 @@ export default {
     },
     checkOutDate(val) {
       this.dates.out = val.toISOString().slice(0, 10);
+    },
+    searchingLeavingFrom() {
+      this.flightFromStatus = true;
+      this.apca.request(this.searchLeavingFrom);
+      this.apca.onSuccess = (data) => {
+        if (data.airports.length > 0 && this.searchLeavingFrom.length > 0) {
+          document.getElementById("flightFromList").style.display = "block";
+          this.flight_code = [];
+          for (let i = 0; i < data.airports.length; i++) {
+            this.flight_code[i] = [
+              data.airports[i].name,
+              data.airports[i].city,
+              data.airports[i].iata,
+            ];
+          }
+        }
+      };
+      this.apca.onError = (data) => {
+        console.log("onError", data.message);
+      };
+    },
+    searchingGoingTo() {
+      this.flightToStatus = true;
+      this.apca.request(this.searchGoingTo);
+      this.apca.onSuccess = (data) => {
+        if (data.airports.length > 0 && this.searchGoingTo.length > 0) {
+          document.getElementById("flightToList").style.display = "block";
+          this.flight_code = [];
+          for (let i = 0; i < data.airports.length; i++) {
+            this.flight_code[i] = [
+              data.airports[i].name,
+              data.airports[i].city,
+              data.airports[i].iata,
+            ];
+          }
+        }
+      };
+      this.apca.onError = (data) => {
+        console.log("onError", data.message);
+      };
+    },
+    setFlightFrom(iata, city) {
+      this.leavingFrom = iata;
+      this.leavingFromCity = city;
+      document.getElementById("flightFromList").style.display = "none";
+    },
+    setFlightTo(iata, city) {
+      this.goingTo = iata;
+      this.goingToCity = city;
+      document.getElementById("flightToList").style.display = "none";
+    },
+    searchFlights() {
+      var url =
+        "https://api.sharetrip.net/api/v1/flight/search?tripType=Return&adult=1&child=0&infant=0&class=Economy&origin=" +
+        this.leavingFrom +
+        "&destination=" +
+        this.goingTo +
+        "&depart=" +
+        this.dates.in +
+        "&depart=" +
+        this.dates.out;
+      console.log(url);
+      fetch(url)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+        });
     },
   },
 };

@@ -14,6 +14,8 @@ import {
   faExclamationTriangle
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import VueParticles from 'vue-particles'
+Vue.use(VueParticles)
 
 library.add(faPlane, faList, faTicketAlt, faExchangeAlt, faExclamationTriangle);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
