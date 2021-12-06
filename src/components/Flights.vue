@@ -212,26 +212,62 @@
     </div>
 
     <div class="mt-3">
+      <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4"></div>
+      </div>
+    </div>
+
+    <div class="mt-3">
       <div>
-        <b-card>
-          <div class="row">
-            <div class="col-md-3">
-              <h1>Time</h1>
-              <h4>HDS</h4>
-            </div>
-            <div class="col-md-3">
-              <h2>time</h2>
-            </div>
-            <div class="col-md-3">
-              <h1>Time</h1>
-              <h4>HDS</h4>
-            </div>
-            <div class="col-md-3">
-              <h1>Time</h1>
-              <h4>HDS</h4>
-            </div>
-          </div>
-        </b-card>
+        <li class="border-1" style="list-style-type: none">
+          <b-card class="card-class text-white" id="flightList">
+            <b-row>
+              <b-col style="text-align: center">
+                <h2>Departure Time</h2>
+              </b-col>
+              <b-col style="text-align: center">
+                <h2>Duration</h2>
+              </b-col>
+              <b-col style="text-align: center">
+                <h2>Arrival Time</h2>
+              </b-col>
+              <b-col style="text-align: center">
+                <h2>Price</h2>
+              </b-col>
+            </b-row>
+          </b-card>
+        </li>
+        <li
+          class="border-1 mt-1 bg-gradient"
+          style="list-style-type: none"
+          v-for="flightData of flightsData"
+          :key="flightData.index"
+        >
+          <b-card class="card-class text-white" id="flightList">
+            <b-row>
+              <b-col style="text-align: center">
+                <h2>{{ flightData.departureTime }}</h2>
+                <h3>{{ flightData.originCode }}</h3>
+              </b-col>
+              <b-col style="text-align: center">
+                <h1>
+                  <font-awesome-icon icon="plane" />
+                </h1>
+                <h3>{{ flightData.durationTime }}</h3>
+              </b-col>
+              <b-col style="text-align: center">
+                <h2>{{ flightData.arivalTime }}</h2>
+                <h3>{{ flightData.destinationCode }}</h3>
+              </b-col>
+              <b-col style="text-align: center">
+                <h1></h1>
+                <h2>{{ flightData.price }} BDT</h2>
+              </b-col>
+            </b-row>
+          </b-card>
+        </li>
       </div>
     </div>
   </div>
@@ -241,6 +277,7 @@
 import HotelDatePicker from "vue-hotel-datepicker";
 import "vue-hotel-datepicker/dist/vueHotelDatepicker.css";
 import { autocomplete } from "air-port-codes-node";
+import axios from "axios";
 
 export default {
   components: {
@@ -268,7 +305,7 @@ export default {
         secret: "a6741e771d9252d", // Your API Secret Key: use this if you are not connecting from a web server
         limit: 5,
       }),
-      flights: [],
+      flightsData: [],
     };
   },
   methods: {
@@ -339,11 +376,83 @@ export default {
         "&depart=" +
         this.dates.out;
       console.log(url);
-      fetch(url)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
+      axios
+        .get(url)
+        .then((response) => {
+          response = JSON.stringify(response);
+          response = JSON.parse(response);
+          let counterValue = 0;
+          let allFlightsData = [];
+          let flightPrices = [
+            9876, 2342, 1947, 10000, 45000, 5000, 3333, 7654, 12345, 6567,
+          ];
+          const flightsLength = response.data.response.flights.length;
+          try {
+            for (let i = 0; i < flightsLength; i++) {
+              const originCity =
+                response.data.response.flights[i].flight[0].originName.city;
+              const originAirport =
+                response.data.response.flights[i].flight[0].originName.airport;
+              const destinationCity =
+                response.data.response.flights[i].flight[0].destinationName
+                  .city;
+              const originCode =
+                response.data.response.flights[i].flight[0].originName.code;
+              const destinationAirport =
+                response.data.response.flights[i].flight[0].destinationName
+                  .airport;
+              const destinationCode =
+                response.data.response.flights[i].flight[0].destinationName
+                  .code;
+              const arivalTime =
+                response.data.response.flights[i].flight[0].arrivalDateTime
+                  .time;
+              const departureTime =
+                response.data.response.flights[i].flight[0].departureDateTime
+                  .time;
+              const durationTime =
+                response.data.response.flights[i].flight[0].duration;
+              const flightPrice = response.data.response.flights[i].price;
+              const logo = response.data.response.flights[i].flight[0].logo;
+              const eachFlightData = {
+                index: i,
+                originCity: originCity,
+                destinationCity: destinationCity,
+                originCode: originCode,
+                destinationCode: destinationCode,
+                arivalTime: arivalTime,
+                departureTime: departureTime,
+                originAirport: originAirport,
+                destinationAirport: destinationAirport,
+                price: flightPrice,
+                durationTime: durationTime,
+                logo: logo,
+              };
+              allFlightsData.push(eachFlightData);
+              counterValue++;
+            }
+          } catch (error) {
+            console.log("Error" + error.message);
+          }
+          this.flightsData = allFlightsData;
+          console.log(this.flightsData);
+        })
+        .catch((e) => {
+          this.errors.push(e);
         });
+    },
+    getWeather(val) {
+      const options = {
+        method: "GET",
+        url: "https://weatherapi-com.p.rapidapi.com/forecast.json",
+        qs: { q: `${val}`, days: "3" },
+        headers: {
+          "x-rapidapi-host": "weatherapi-com.p.rapidapi.com",
+          "x-rapidapi-key":
+            "af8a4d5d3emshe34311a0dfd42e3p1d160bjsn7ba404c8d59d",
+          useQueryString: true,
+        },
+      };
     },
   },
 };
@@ -410,5 +519,13 @@ export default {
   background-position: right center;
   color: #fff;
   text-decoration: none;
+}
+#flightList {
+  background-image: linear-gradient(
+    to right,
+    #005d63 0%,
+    #005c63af 51%,
+    #005d63 100%
+  );
 }
 </style>
